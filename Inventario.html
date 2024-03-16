@@ -1,105 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <!-- Configuración básica del documento -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Inventario</title>
-    <!-- Estilos CSS -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #3144b3;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #ffffff;
-            display: flex;
-        }
-        
-        #formulario {
-            margin-bottom: 20px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.);
-            width: 400px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        
-        input {
-            margin-bottom: 10px;
-            padding: 8px;
-            width: calc(100% - 16px);
-            border: 1px solid #e9e064;
-            border-radius: 4px;
-        }
-        
-        button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: rgb(255, 255, 255);
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-}
-        
-        button:hover {
-            background-color: #5d95d4;
-        }
-        
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        li {
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            background-color: #d3e280;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            position: relative;
-        }
-
-        img {
-            max-width: 100px;
-            max-height: 100px;
-            margin-top: 10px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        #total {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #ffffff;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <!-- Encabezado -->
     <h1>Inventario</h1>
     
-    <!-- Formulario para agregar productos -->
     <div id="formulario">
         <label for="producto">Producto:</label>
         <input type="text" id="producto">
@@ -110,119 +17,17 @@
         <label for="precio">Precio:</label>
         <input type="number" id="precio">
         
-        <!-- Input para subir una foto del producto -->
         <input type="file" accept="image/*" capture="camera" id="foto" onchange="previewFoto(event)">
         
-        <!-- Botón para obtener la ubicación automáticamente -->
-        <button onclick="obtenerUbicacion()">Obtener Ubicación</button>
-        <!-- Botón para agregar producto -->
         <button onclick="agregarProducto()">Agregar Producto</button>
     </div>
     
-    <!-- Lista de productos -->
     <ul id="listaProductos"></ul>
 
-    <!-- Sección para mostrar el total -->
     <div id="total"></div>
-    
-    <!-- Script JavaScript -->
-    <script>
-        // Arreglo para almacenar el inventario de productos
-        var inventario = [];
-        
-        // Función para agregar un nuevo producto al inventario
-        function agregarProducto() {
-            var producto = document.getElementById("producto").value;
-            var cantidad = parseInt(document.getElementById("cantidad").value);
-            var precio = parseFloat(document.getElementById("precio").value);
-            var foto = document.getElementById("foto").files[0];
-            
-            // Añadir el nuevo producto al inventario
-            inventario.push({producto: producto, cantidad: cantidad, precio: precio, foto: foto});
-            
-            // Actualizar la visualización del inventario
-            mostrarInventario();
-        }
-        
-        // Función para mostrar el inventario actualizado en la página
-        function mostrarInventario() {
-            var listaProductos = document.getElementById("listaProductos");
-            var totalHTML = document.getElementById("total");
-            listaProductos.innerHTML = "";
-            totalHTML.innerHTML = "Total de cada ítem:<br>";
-            
-            var totalGeneral = 0;
 
-            // Iterar sobre el inventario y mostrar cada producto
-            inventario.forEach(function(item) {
-                var nuevoProducto = document.createElement("li");
-                var totalItem = item.cantidad * item.precio;
-                totalGeneral += totalItem;
-
-                nuevoProducto.textContent = item.producto + " - " + item.cantidad + " unidades - Precio total: $" + totalItem.toFixed(2);
-
-                // Mostrar la foto del producto, si está disponible
-                if(item.foto) {
-                    var preview = document.createElement("img");
-                    preview.src = URL.createObjectURL(item.foto);
-                    nuevoProducto.appendChild(preview);
-                }
-
-                listaProductos.appendChild(nuevoProducto);
-            });
-
-            // Mostrar el total general del inventario
-            totalHTML.innerHTML += "Total general: $" + totalGeneral.toFixed(2);
-        }
-
-        // Función para previsualizar la foto seleccionada
-        function previewFoto(event) {
-            var foto = event.target.files[0];
-            var preview = document.createElement("img");
-            preview.src = URL.createObjectURL(foto);
-            document.getElementById("formulario").appendChild(preview);
-        }
-        // Función para obtener la ubicación automáticamente
-        function obtenerUbicacion() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
-
-            // Añadir el nuevo producto al inventario con la ubicación obtenida
-            inventario.push({producto: 'Producto', cantidad: 1, precio: 0, foto: null, ubicacion: 'Latitud: ' + lat + ', Longitud: ' + lon});
-
-            // Actualizar la visualización del inventario
-            mostrarInventario();
-        });
-    } else {
-        alert('La geolocalización no está disponible en tu dispositivo.');
-    }
-}
-    </script>
-
-    <!-- Script para exportar el inventario a Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    <script>
-        function exportarExcel() {
-            var wb = XLSX.utils.book_new();
-            wb.Props = {
-                Title: "Inventario",
-                Subject: "Datos del inventario",
-                Author: "Tú",
-                CreatedDate: new Date()
-            };
-
-            var ws = XLSX.utils.json_to_sheet(inventario);
-            XLSX.utils.book_append_sheet(wb, ws, "Inventario");
-
-            // Descargar el archivo Excel
-            XLSX.writeFile(wb, "inventario.xlsx");
-        }
-    </script>
-    
-    <!-- Botón para exportar a Excel -->
     <button onclick="exportarExcel()">Exportar a Excel</button>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
